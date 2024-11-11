@@ -76,7 +76,7 @@ def assets():
     vuaaPrice = '106' # getCurrentVuaaPriceInUsd()
     btcPrice = '76000' # getCurrentCryptoPriceInUsd("BTC")
     ethPrice = '3100' #getCurrentCryptoPriceInUsd("ETH")
-    # dotPrice = getCurrentDotPriceInUsd()
+    dotPrice = '10' #getCurrentCryptoPriceInUsd("DOT")
     # goldPrice = getCurrentGoldPriceInUsd()
 
     return render_template('assets.html',
@@ -116,7 +116,6 @@ def getCurrentVuaaPriceInUsd():
     priceVuaaUk = requests.get(url).json()['Time Series (Daily)']['2024-11-08']['1. open']
 
     return priceVuaaUk
-
 
 
 if __name__ == '__main__':
