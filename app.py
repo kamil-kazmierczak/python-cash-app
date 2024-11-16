@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 from models.users import init_users, User, db
-import requests
+from services.price_service import PriceService
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'kamil'
@@ -14,6 +14,7 @@ db.init_app(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 init_users(app)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -46,6 +47,7 @@ def login():
 
     return render_template('login.html', form=form)
 
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -66,56 +68,24 @@ def register():
     return render_template('register.html', form=form)
 
 
-
-
-
 @app.route('/assets')
 @login_required
 def assets():
-    usd = '4.03' #getCurrentUsdPriceInPln()
-    vuaaPrice = '106' # getCurrentVuaaPriceInUsd()
-    btcPrice = '76000' # getCurrentCryptoPriceInUsd("BTC")
-    ethPrice = '3100' #getCurrentCryptoPriceInUsd("ETH")
-    dotPrice = '10' #getCurrentCryptoPriceInUsd("DOT")
-    # goldPrice = getCurrentGoldPriceInUsd()
+    usd = PriceService.get_current_usd_price_in_pln()
+    vuaa_price = PriceService.get_current_vuaa_price_in_usd()
+    btc_price = PriceService.get_current_crypto_price_in_usd("BTC")
+    eth_price = PriceService.get_current_crypto_price_in_usd("ETH")
+    dot_price = PriceService.get_current_crypto_price_in_usd("DOT")
 
     return render_template('assets.html',
                            title='Money Portfolio',
                            username='Kamil',
                            usdPrice=usd,
-                           btcPrice=btcPrice,
-                           ethPrice=ethPrice,
-                           vuaaPrice=vuaaPrice
+                           btcPrice=btc_price,
+                           ethPrice=eth_price,
+                           vuaaPrice=vuaa_price,
+                           dotPrice=dot_price
                            )
-
-
-def getCurrentUsdPriceInPln():
-    api_key = 'fxr_live_d374de9d27c3038b38513faad079dcfe6026' # my free private api_key from fxrates
-    url = 'https://api.fxratesapi.com/latest?api_key=' + api_key + '&currencies=PLN&base=USD'
-
-    response = requests.request("GET", url)
-
-    result = response.json()
-    usdPrice = result['rates']['PLN']
-
-    return usdPrice
-
-
-def getCurrentCryptoPriceInUsd(cryptocurrencyTicker):
-    api_key = 'IH2HAUUSGQSG69DT' # my free private api_key from alpha advantage
-    url = 'https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=' + cryptocurrencyTicker + '&market=USD&apikey=' + api_key
-
-    price = requests.get(url).json()['Time Series (Digital Currency Daily)']['2024-11-08']['1. open']
-
-    return price
-
-def getCurrentVuaaPriceInUsd():
-    api_key = 'IH2HAUUSGQSG69DT' # my free private api_key from alpha advantage
-    url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=VUAA.LON&apikey=' + api_key
-
-    priceVuaaUk = requests.get(url).json()['Time Series (Daily)']['2024-11-08']['1. open']
-
-    return priceVuaaUk
 
 
 if __name__ == '__main__':
