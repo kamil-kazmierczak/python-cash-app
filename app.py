@@ -5,6 +5,7 @@ from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 from models.users import init_users, User, db
 from services.price_service import PriceService
+from services.file_service import FileService
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'kamil'
@@ -71,20 +72,20 @@ def register():
 @app.route('/assets')
 @login_required
 def assets():
-    usd = PriceService.get_current_usd_price_in_pln()
-    vuaa_price = PriceService.get_current_vuaa_price_in_usd()
-    btc_price = PriceService.get_current_crypto_price_in_usd("BTC")
-    eth_price = PriceService.get_current_crypto_price_in_usd("ETH")
-    dot_price = PriceService.get_current_crypto_price_in_usd("DOT")
+    btc_price = FileService.read_btc_price("2024-11-17")
+    eth_price = FileService.read_eth_price("2024-11-17")
+    dot_price = FileService.read_dot_price("2024-11-17")
+    vuaa_price = FileService.read_vuaa_price("2024-11-15")
+    usd = FileService.read_usd_price_in_pln()
 
     return render_template('assets.html',
                            title='Money Portfolio',
                            username='Kamil',
-                           usdPrice=usd,
                            btcPrice=btc_price,
                            ethPrice=eth_price,
+                           dotPrice=dot_price,
                            vuaaPrice=vuaa_price,
-                           dotPrice=dot_price
+                           usdPrice=usd
                            )
 
 
