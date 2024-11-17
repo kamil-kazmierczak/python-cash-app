@@ -77,6 +77,8 @@ def assets():
     dot_price = FileService.read_dot_price("2024-11-17")
     vuaa_price = FileService.read_vuaa_price("2024-11-15")
     usd = FileService.read_usd_price_in_pln()
+    assets_per_name = FileService.read_assets()
+    print(assets_per_name)
 
     return render_template('assets.html',
                            title='Money Portfolio',

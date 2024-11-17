@@ -1,4 +1,5 @@
 import json
+import csv
 
 class FileService:
 
@@ -40,3 +41,14 @@ class FileService:
         with open('json/usd.json', 'r') as file:
             data = json.load(file)["rates"]["PLN"]
         return data
+
+    @staticmethod
+    def read_assets():
+        assets_per_name = {}
+        with open('csv/assets.csv', 'r') as file:
+            csv_reader = csv.reader(file, delimiter='|')
+            for row in csv_reader:
+                asset_name = row[0]
+                asset_amount = float(row[1])
+                assets_per_name[asset_name] = asset_amount
+        return assets_per_name
