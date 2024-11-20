@@ -23,11 +23,18 @@
         <p>This is your money portfolio.</p>
     </div>
 	<div class="container mt-5">
-        <h1>USD: {{ usdPrice }}</h1>
-        <h1>BTC: {{ btcPrice }}</h1>
-        <h1>ETH: {{ ethPrice }}</h1>
-        <h1>DOT: {{ dotPrice }}</h1>
-        <h1>VUAA.UK: {{ vuaaPrice }}</h1>
+        <h1>USD: {{ usd_price }} PLN</h1>
+        <h1>BTC: ${{ btc_price }}</h1>
+        <h1>ETH: ${{ eth_price }}</h1>
+        <h1>DOT: ${{ dot_price }}</h1>
+        <h1>VUAA.UK: ${{ vuaa_price }}</h1>
+        <br>
+        <h1>BTC: {{ value_btc_pln }} PLN</h1>
+        <h1>ETH: {{ value_eth_pln }} PLN</h1>
+        <h1>DOT: {{ value_dot_pln }} PLN</h1>
+        <h1>VUAA.UK: {{ value_vuaa_pln }} PLN</h1>
+        <br>
+        <h1>Sum: {{ _sum }} PLN</h1>
 	</div>
 </body>
 </html>

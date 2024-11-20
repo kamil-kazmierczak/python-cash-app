@@ -72,22 +72,34 @@ def register():
 @app.route('/assets')
 @login_required
 def assets():
-    btc_price = FileService.read_btc_price("2024-11-17")
-    eth_price = FileService.read_eth_price("2024-11-17")
-    dot_price = FileService.read_dot_price("2024-11-17")
-    vuaa_price = FileService.read_vuaa_price("2024-11-15")
-    usd = FileService.read_usd_price_in_pln()
+    btc_price = round(float(FileService.read_btc_price("2024-11-17")), 2)
+    eth_price = round(float(FileService.read_eth_price("2024-11-17")), 2)
+    dot_price = round(float(FileService.read_dot_price("2024-11-17")), 2)
+    vuaa_price = round(float(FileService.read_vuaa_price("2024-11-15")), 2)
+    usd = round(float(FileService.read_usd_price_in_pln()), 2)
+
     assets_per_name = FileService.read_assets()
-    print(assets_per_name)
+
+    value_btc_pln = round(float(assets_per_name['BTC']) * float(btc_price) * usd, 2)
+    value_eth_pln = round(float(assets_per_name['ETH']) * float(eth_price) * usd, 2)
+    value_dot_pln = round(float(assets_per_name['DOT']) * float(dot_price) * usd, 2)
+    value_vuaa_pln = round(float(assets_per_name['VUAA.UK']) * float(vuaa_price) * usd, 2)
+
+    _sum = round(value_btc_pln + value_eth_pln + value_dot_pln + value_vuaa_pln, 2)
 
     return render_template('assets.html',
                            title='Money Portfolio',
                            username='Kamil',
-                           btcPrice=btc_price,
-                           ethPrice=eth_price,
-                           dotPrice=dot_price,
-                           vuaaPrice=vuaa_price,
-                           usdPrice=usd
+                           btc_price=btc_price,
+                           eth_price=eth_price,
+                           dot_price=dot_price,
+                           vuaa_price=vuaa_price,
+                           usd_price=usd,
+                           value_btc_pln=value_btc_pln,
+                           value_eth_pln=value_eth_pln,
+                           value_dot_pln=value_dot_pln,
+                           value_vuaa_pln=value_vuaa_pln,
+                           _sum=_sum
                            )
 
 
