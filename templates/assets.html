@@ -7,6 +7,15 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+        function download_data() {
+            fetch('/download_data')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                });
+        }
+    </script>
 </head>
 <body>
 <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -66,10 +75,10 @@
         <div class="navbar-end">
             <div class="navbar-item">
                 <div class="buttons">
+                    <button class="button is-light" onclick="download_data()">
+                        <strong>Download new data</strong>
+                    </button>
                     <a class="button is-primary">
-                        <strong>Sign up</strong>
-                    </a>
-                    <a class="button is-light">
                         Log in
                     </a>
                 </div>
@@ -88,9 +97,9 @@
         <table class="table">
             <thead>
             <tr>
-                <th><abbr title="Position">Pos</abbr></th>
-                <th>Asset</th>
-                <th><abbr title="Price">Price</abbr></th>
+                <th></th>
+                <th>Name</th>
+                <th>Price</th>
             </tr>
             </thead>
             <tbody>
@@ -123,6 +132,13 @@
                 <td>VUAA.UK</td>
                 <td>${{ vuaa_price }}</td>
             </tr>
+
+
+            <tr>
+                <th>6</th>
+                <td>NBP</td>
+                <td>{{ nbp_price }} PLN</td>
+            </tr>
             </tbody>
 
         </table>
@@ -132,38 +148,66 @@
         <table class="table">
             <thead>
             <tr>
-                <th><abbr title="Position">Pos</abbr></th>
-                <th>Asset</th>
-                <th><abbr title="Amount">Amount</abbr></th>
+                <th></th>
+                <th>Name</th>
+                <th>Amount</th>
+                <th>Value</th>
+                <th>Overall</th>
             </tr>
             </thead>
             <tbody>
             <tr>
                 <th>1</th>
                 <td>BTC</td>
+                <td>{{ assets_per_name.BTC }}</td>
                 <td>{{ value_btc_pln }} PLN</td>
+                <td>{{ overall.BTC }} %</td>
             </tr>
 
             <tr>
                 <th>2</th>
                 <td>ETH</td>
+                <td>{{ assets_per_name.ETH }}</td>
                 <td>{{ value_eth_pln }} PLN</td>
+                <td>{{ overall.ETH }} %</td>
             </tr>
 
             <tr>
                 <th>3</th>
                 <td>DOT</td>
+                <td>{{ assets_per_name.DOT }}</td>
                 <td>{{ value_dot_pln }} PLN</td>
+                <td>{{ overall.DOT }} %</td>
             </tr>
 
             <tr>
                 <th>4</th>
                 <td>VUAA.UK</td>
+                <td>{{ assets_per_name['VUAA.UK'] }}</td>
                 <td>{{ value_vuaa_pln }} PLN</td>
+                <td>{{ overall['VUAA.UK'] }} %</td>
+            </tr>
+
+
+            <tr>
+                <th>5</th>
+                <td>Obligacje NBP</td>
+                <td>{{ assets_per_name.NBP }}</td>
+                <td>{{ value_nbp_pln }} PLN</td>
+                <td>{{ overall.NBP }} %</td>
+            </tr>
+
+            <tr>
+                <th>6</th>
+                <td>USD</td>
+                <td>{{ assets_per_name.USD }}</td>
+                <td>{{ value_usd_pln }} PLN</td>
+                <td>{{ overall.USD }} %</td>
             </tr>
 
             <tr>
                 <th>Sum</th>
+                <td></td>
                 <td></td>
                 <td>{{ _sum }} PLN</td>
             </tr>

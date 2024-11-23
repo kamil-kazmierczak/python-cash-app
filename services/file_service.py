@@ -1,6 +1,10 @@
 import json
 import csv
 
+DIGITAL_KEY = "Time Series (Digital Currency Daily)"
+KEY = "Time Series (Daily)"
+
+
 class FileService:
 
     @staticmethod
@@ -13,28 +17,28 @@ class FileService:
     @staticmethod
     def read_btc_price(date):
         with open('json/btc.json', 'r') as file:
-            data = json.load(file)["Time Series (Digital Currency Daily)"][date]["1. open"]
+            data = json.load(file)[DIGITAL_KEY][date]["1. open"]
         return data
 
     @staticmethod
     def read_eth_price(date):
         with open('json/eth.json', 'r') as file:
-            data = json.load(file)["Time Series (Digital Currency Daily)"][date]["1. open"]
-        return data
+            data = json.load(file)
+
+            eth_price = data[DIGITAL_KEY][date]["1. open"]
+        return eth_price
 
     @staticmethod
     def read_dot_price(date):
         with open('json/dot.json', 'r') as file:
-            data = json.load(file)["Time Series (Digital Currency Daily)"][date]["1. open"]
+            data = json.load(file)[DIGITAL_KEY][date]["1. open"]
         return data
-
 
     @staticmethod
     def read_vuaa_price(date):
         with open('json/vuaa.json', 'r') as file:
-            data = json.load(file)["Time Series (Daily)"][date]["1. open"]
+            data = json.load(file)[KEY][date]["1. open"]
         return data
-
 
     @staticmethod
     def read_usd_price_in_pln():
