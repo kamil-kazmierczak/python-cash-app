@@ -56,3 +56,17 @@ class FileService:
                 asset_amount = float(row[1])
                 assets_per_name[asset_name] = asset_amount
         return assets_per_name
+
+    @staticmethod
+    def read_current_crypto_price(file_path):
+        with open(file_path, 'r') as file:
+            content = json.load(file)
+            current_date = list(content[DIGITAL_KEY].keys())[0]
+        return content[DIGITAL_KEY][current_date]['1. open']
+
+    @staticmethod
+    def read_current_etf_price(file_path):
+        with open(file_path, 'r') as file:
+            content = json.load(file)
+            current_date = list(content[KEY].keys())[0]
+        return content[KEY][current_date]['1. open']

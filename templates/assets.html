@@ -106,38 +106,38 @@
             <tr>
                 <th>1</th>
                 <td>USD</td>
-                <td>{{ usd_price }} PLN</td>
+                <td>{{ prices.USD }} PLN</td>
             </tr>
 
             <tr>
                 <th>2</th>
                 <td>BTC</td>
-                <td>${{ btc_price }}</td>
+                <td>${{ prices.BTC }}</td>
             </tr>
 
             <tr>
                 <th>3</th>
                 <td>ETH</td>
-                <td>${{ eth_price }}</td>
+                <td>${{ prices.ETH }}</td>
             </tr>
 
             <tr>
                 <th>4</th>
                 <td>DOT</td>
-                <td>${{ dot_price }}</td>
+                <td>${{ prices.DOT }}</td>
             </tr>
 
             <tr>
                 <th>5</th>
                 <td>VUAA.UK</td>
-                <td>${{ vuaa_price }}</td>
+                <td>${{ prices['VUAA.UK'] }}</td>
             </tr>
 
 
             <tr>
                 <th>6</th>
                 <td>NBP</td>
-                <td>{{ nbp_price }} PLN</td>
+                <td>{{ prices.NBP }} PLN</td>
             </tr>
             </tbody>
 
@@ -160,7 +160,7 @@
                 <th>1</th>
                 <td>BTC</td>
                 <td>{{ assets_per_name.BTC }}</td>
-                <td>{{ value_btc_pln }} PLN</td>
+                <td>{{ values.BTC }} PLN</td>
                 <td>{{ overall.BTC }} %</td>
             </tr>
 
@@ -168,7 +168,7 @@
                 <th>2</th>
                 <td>ETH</td>
                 <td>{{ assets_per_name.ETH }}</td>
-                <td>{{ value_eth_pln }} PLN</td>
+                <td>{{ values.ETH }} PLN</td>
                 <td>{{ overall.ETH }} %</td>
             </tr>
 
@@ -176,7 +176,7 @@
                 <th>3</th>
                 <td>DOT</td>
                 <td>{{ assets_per_name.DOT }}</td>
-                <td>{{ value_dot_pln }} PLN</td>
+                <td>{{ values.DOT }} PLN</td>
                 <td>{{ overall.DOT }} %</td>
             </tr>
 
@@ -184,16 +184,15 @@
                 <th>4</th>
                 <td>VUAA.UK</td>
                 <td>{{ assets_per_name['VUAA.UK'] }}</td>
-                <td>{{ value_vuaa_pln }} PLN</td>
+                <td>{{ values['VUAA.UK'] }} PLN</td>
                 <td>{{ overall['VUAA.UK'] }} %</td>
             </tr>
-
 
             <tr>
                 <th>5</th>
                 <td>Obligacje NBP</td>
                 <td>{{ assets_per_name.NBP }}</td>
-                <td>{{ value_nbp_pln }} PLN</td>
+                <td>{{ values.NBP }} PLN</td>
                 <td>{{ overall.NBP }} %</td>
             </tr>
 
@@ -201,7 +200,7 @@
                 <th>6</th>
                 <td>USD</td>
                 <td>{{ assets_per_name.USD }}</td>
-                <td>{{ value_usd_pln }} PLN</td>
+                <td>{{ values.USD }} PLN</td>
                 <td>{{ overall.USD }} %</td>
             </tr>
 

@@ -89,48 +89,42 @@ def download_data():
 @app.route('/assets')
 @login_required
 def assets():
-    btc_price = round(float(FileService.read_btc_price("2024-11-23")), 2)
-    eth_price = round(float(FileService.read_eth_price("2024-11-23")), 2)
-    dot_price = round(float(FileService.read_dot_price("2024-11-23")), 2)
-    vuaa_price = round(float(FileService.read_vuaa_price("2024-11-22")), 2)
-    nbp_price = 100
-    usd = round(float(FileService.read_usd_price_in_pln()), 2)
-
     assets_per_name = FileService.read_assets()
 
-    value_btc_pln = round(float(assets_per_name['BTC']) * float(btc_price) * usd, 2)
-    value_eth_pln = round(float(assets_per_name['ETH']) * float(eth_price) * usd, 2)
-    value_dot_pln = round(float(assets_per_name['DOT']) * float(dot_price) * usd, 2)
-    value_vuaa_pln = round(float(assets_per_name['VUAA.UK']) * float(vuaa_price) * usd, 2)
-    value_nbp_pln = assets_per_name['NBP'] * nbp_price
-    value_usd_pln = round(assets_per_name['USD'] * usd, 2)
+    prices = {
+        'BTC': round(float(FileService.read_current_crypto_price('json/btc.json')), 2),
+        'ETH': round(float(FileService.read_current_crypto_price('json/eth.json')), 2),
+        'DOT': round(float(FileService.read_current_crypto_price('json/dot.json')), 2),
+        'VUAA.UK': round(float(FileService.read_current_etf_price('json/vuaa.json')), 2),
+        'NBP': 100,
+        'USD': round(float(FileService.read_usd_price_in_pln()), 2)
+    }
 
-    _sum = round(value_btc_pln + value_eth_pln + value_dot_pln + value_vuaa_pln + value_nbp_pln + value_usd_pln, 2)
+    values = {
+        'BTC': round(float(assets_per_name['BTC']) * prices['BTC'] * prices['USD'], 2),
+        'ETH': round(float(assets_per_name['ETH']) * prices['ETH'] * prices['USD'], 2),
+        'DOT': round(float(assets_per_name['DOT']) * prices['DOT'] * prices['USD'], 2),
+        'VUAA.UK': round(float(assets_per_name['VUAA.UK']) * prices['VUAA.UK'] * prices['USD'], 2),
+        'NBP': assets_per_name['NBP'] * prices['NBP'],
+        'USD': round(assets_per_name['USD'] * prices['USD'], 2)
+    }
+
+    _sum = round(values['BTC'] + values['ETH'] + values['DOT'] + values['VUAA.UK'] + values['NBP'] + values['USD'], 2)
 
     overall = {
-        'BTC': round(value_btc_pln / _sum, 2) * 100,
-        'ETH': round(value_eth_pln / _sum, 2) * 100,
-        'DOT': round(value_dot_pln / _sum, 2) * 100,
-        'VUAA.UK': round(value_vuaa_pln / _sum, 2) * 100,
-        'NBP': round(value_nbp_pln / _sum, 2) * 100,
-        'USD': round(value_usd_pln / _sum, 2) * 100
+        'BTC': f"{values['BTC'] / _sum * 100:.2f}",
+        'ETH': f"{values['ETH'] / _sum * 100:.2f}",
+        'DOT': f"{values['DOT'] / _sum * 100:.2f}",
+        'VUAA.UK': f"{values['VUAA.UK'] / _sum * 100:.2f}",
+        'NBP': f"{values['NBP'] / _sum * 100:.2f}",
+        'USD': f"{values['USD'] / _sum * 100:.2f}"
     }
 
     return render_template('assets.html',
                            title='Money Portfolio',
                            username='Kamil',
-                           btc_price=btc_price,
-                           eth_price=eth_price,
-                           dot_price=dot_price,
-                           vuaa_price=vuaa_price,
-                           usd_price=usd,
-                           nbp_price=nbp_price,
-                           value_btc_pln=value_btc_pln,
-                           value_eth_pln=value_eth_pln,
-                           value_dot_pln=value_dot_pln,
-                           value_vuaa_pln=value_vuaa_pln,
-                           value_nbp_pln=value_nbp_pln,
-                           value_usd_pln=value_usd_pln,
+                           prices=prices,
+                           values=values,
                            assets_per_name=assets_per_name,
                            overall=overall,
                            _sum=_sum
