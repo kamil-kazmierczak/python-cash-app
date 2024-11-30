@@ -1,4 +1,9 @@
 import requests
+from playwright.sync_api import sync_playwright
+from bs4 import BeautifulSoup
+import re
+from datetime import date
+
 
 API_KEY_ALPHA_VANTAGE = 'IH2HAUUSGQSG69DT'
 API_KEY_FX_RATES = 'fxr_live_d374de9d27c3038b38513faad079dcfe6026'
@@ -25,3 +30,36 @@ class PriceService:
         url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=VUAA.LON&apikey=' + API_KEY_ALPHA_VANTAGE
         response = requests.get(url).json()
         return response
+
+    @staticmethod
+    def fetch_gold_one_oz_coin_price_in_pln():
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+
+            page.goto('https://mennicakapitalowa.pl/Skup-zlotych-monet-cennik-i-zasady-ccms-pol-65.html')
+
+            try:
+                page.locator('a[data-cookie-view="basic minimal consents privacy"]').wait_for()
+                page.locator('a[data-cookie-view="basic minimal consents privacy"]').click()
+            except:
+                print('Nie znaleziono przycisku do zatwierdzenie plikow cookie')
+
+            html = page.content()
+            browser.close()
+
+        soup = BeautifulSoup(html, 'html.parser')
+        div = soup.find('div', class_='table_column', string='Liść Klonu 1 oz')
+        value_string = div.find_next_sibling('div', class_='table_column').text
+
+        value = re.sub(r"[^\d..,]", "", value_string).replace(",", "")
+
+        return {
+            "date": date.today().isoformat(),
+            "currency": "PLN",
+            "value": float(value)
+        }
+
+
+
+

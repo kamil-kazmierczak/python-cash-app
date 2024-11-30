@@ -70,3 +70,9 @@ class FileService:
             content = json.load(file)
             current_date = list(content[KEY].keys())[0]
         return content[KEY][current_date]['1. open']
+
+    @staticmethod
+    def read_gold_price_in_pln():
+        with open('json/gold.json', 'r') as file:
+            content = json.load(file)
+        return content['value']

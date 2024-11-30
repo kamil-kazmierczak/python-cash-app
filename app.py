@@ -6,6 +6,8 @@ from forms.register_form import RegisterForm
 from models.users import init_users, User, db
 from services.price_service import PriceService
 from services.file_service import FileService
+from playwright.sync_api import sync_playwright
+from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'kamil'
@@ -76,12 +78,15 @@ def download_data():
     json_eth = PriceService.fetch_crypto_price_in_usd('ETH')
     json_dot = PriceService.fetch_crypto_price_in_usd('DOT')
     json_vuaa = PriceService.fetch_vuaa_price_in_usd()
+    json_gold = PriceService.fetch_gold_one_oz_coin_price_in_pln()
 
     FileService.save_json(json_usd, 'json/usd.json')
     FileService.save_json(json_btc, 'json/btc.json')
     FileService.save_json(json_eth, 'json/eth.json')
     FileService.save_json(json_dot, 'json/dot.json')
     FileService.save_json(json_vuaa, 'json/vuaa.json')
+    FileService.save_json(json_gold, 'json/gold.json')
+
     print("Jsons saved")
     return json_usd
 
@@ -97,7 +102,8 @@ def assets():
         'DOT': round(float(FileService.read_current_crypto_price('json/dot.json')), 2),
         'VUAA.UK': round(float(FileService.read_current_etf_price('json/vuaa.json')), 2),
         'NBP': 100,
-        'USD': round(float(FileService.read_usd_price_in_pln()), 2)
+        'USD': round(float(FileService.read_usd_price_in_pln()), 2),
+        'GOLD': float(FileService.read_gold_price_in_pln())
     }
 
     values = {
@@ -106,10 +112,11 @@ def assets():
         'DOT': round(float(assets_per_name['DOT']) * prices['DOT'] * prices['USD'], 2),
         'VUAA.UK': round(float(assets_per_name['VUAA.UK']) * prices['VUAA.UK'] * prices['USD'], 2),
         'NBP': assets_per_name['NBP'] * prices['NBP'],
-        'USD': round(assets_per_name['USD'] * prices['USD'], 2)
+        'USD': round(assets_per_name['USD'] * prices['USD'], 2),
+        'GOLD': round(assets_per_name['GOLD'] * prices['GOLD'], 2)
     }
 
-    _sum = round(values['BTC'] + values['ETH'] + values['DOT'] + values['VUAA.UK'] + values['NBP'] + values['USD'], 2)
+    _sum = round(values['BTC'] + values['ETH'] + values['DOT'] + values['VUAA.UK'] + values['NBP'] + values['USD'] + values['GOLD'], 2)
 
     overall = {
         'BTC': f"{values['BTC'] / _sum * 100:.2f}",
@@ -117,7 +124,8 @@ def assets():
         'DOT': f"{values['DOT'] / _sum * 100:.2f}",
         'VUAA.UK': f"{values['VUAA.UK'] / _sum * 100:.2f}",
         'NBP': f"{values['NBP'] / _sum * 100:.2f}",
-        'USD': f"{values['USD'] / _sum * 100:.2f}"
+        'USD': f"{values['USD'] / _sum * 100:.2f}",
+        'GOLD': f"{values['GOLD'] / _sum * 100:.2f}"
     }
 
     return render_template('assets.html',
