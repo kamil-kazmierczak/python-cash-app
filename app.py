@@ -3,20 +3,19 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 from sqlalchemy.orm import Session
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
-from models.users import init_users, User, db
+from models.entities import init_entities, User, Asset, Price, db
 from services.price_service import PriceService
 from services.file_service import FileService
-from playwright.sync_api import sync_playwright
-from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'kamil'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+
 db.init_app(app)
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
-init_users(app)
+init_entities(app)
 
 
 @login_manager.user_loader

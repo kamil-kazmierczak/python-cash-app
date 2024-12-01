@@ -2,10 +2,10 @@
     "success": true,
     "terms": "https://fxratesapi.com/legal/terms-conditions",
     "privacy": "https://fxratesapi.com/legal/privacy-policy",
-    "timestamp": 1732985640,
-    "date": "2024-11-30T16:54:00.000Z",
+    "timestamp": 1733084880,
+    "date": "2024-12-01T20:28:00.000Z",
     "base": "USD",
     "rates": {
-        "PLN": 4.0630208042
+        "PLN": 4.0330804647
     }
 }
