@@ -29,7 +29,12 @@ class Price(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     asset_id = db.Column(db.Integer, db.ForeignKey('assets.id'), nullable=False)
+    value = db.Column(db.Float, nullable=False)
     date = db.Column(db.Date, nullable=False)
+
+    __table_args__ = (
+        db.UniqueConstraint('asset_id', 'date', name='asset_price_constraint'),
+    )
 
 
 class Asset(db.Model):
@@ -40,6 +45,10 @@ class Asset(db.Model):
     unit = db.Column(db.String(80), nullable=False)
 
     prices = db.relationship('Price', backref='assets', lazy=True)
+
+    __table_args__ = (
+        db.UniqueConstraint('name',  name='asset_name_constraint'),
+    )
 
     def __repr__(self):
         return f'<Asset {self.id, self.name, self.unit}>'
@@ -52,8 +61,6 @@ class UserPortfolio(db.Model):
     quantity = db.Column(db.Float, nullable=False)
     purchase_price = db.Column(db.Float, nullable=False)
     purchase_date = db.Column(db.Date, nullable=False)
-
-
 
 
 def init_entities(app):

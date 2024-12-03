@@ -1,5 +1,6 @@
 from flask import render_template, redirect, url_for, Flask, flash
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
@@ -72,22 +73,94 @@ def register():
 
 @app.route('/download_data')
 def download_data():
-    json_usd = PriceService.fetch_usd_price_in_pln()
-    json_btc = PriceService.fetch_crypto_price_in_usd('BTC')
-    json_eth = PriceService.fetch_crypto_price_in_usd('ETH')
-    json_dot = PriceService.fetch_crypto_price_in_usd('DOT')
-    json_vuaa = PriceService.fetch_vuaa_price_in_usd()
-    json_gold = PriceService.fetch_gold_one_oz_coin_price_in_pln()
+    usd = PriceService.fetch_usd_price_in_pln()
+    print(usd)
+    usd_price = Price(asset_id=Asset.query.filter_by(name='USD').first().id, value=usd.value, date=usd.date_)
+    if usd_price:
+        try:
+            db.session.add(usd_price)
+            db.session.commit()
+            print(f"USD price added: {usd_price.value} for {usd_price.date}")
+        except IntegrityError as e:
+            db.session.rollback()
+            print(str(e))
+    else:
+        print("USD price not saved!")
 
-    FileService.save_json(json_usd, 'json/usd.json')
-    FileService.save_json(json_btc, 'json/btc.json')
-    FileService.save_json(json_eth, 'json/eth.json')
-    FileService.save_json(json_dot, 'json/dot.json')
-    FileService.save_json(json_vuaa, 'json/vuaa.json')
-    FileService.save_json(json_gold, 'json/gold.json')
+    btc = PriceService.fetch_crypto_price_in_usd('BTC')
+    btc_price = Price(asset_id=Asset.query.filter_by(name='BTC').first().id, value=btc.value, date=btc.date_)
+    if btc_price:
+        try:
+            db.session.add(btc_price)
+            db.session.commit()
+            print(f"BTC price added: {btc_price.value} for {btc_price.date}")
+        except IntegrityError as e:
+            db.session.rollback()
+            print(str(e))
+    else:
+        print("BTC price not saved!")
+
+    eth = PriceService.fetch_crypto_price_in_usd('ETH')
+    eth_price = Price(asset_id=Asset.query.filter_by(name='ETH').first().id, value=eth.value, date=eth.date_)
+    if eth_price:
+        try:
+            db.session.add(eth_price)
+            db.session.commit()
+            print(f"ETH price added: {eth_price.value} for {eth_price.date}")
+        except IntegrityError as e:
+            db.session.rollback()
+            print(str(e))
+    else:
+        print("ETH price not saved!")
+
+    dot = PriceService.fetch_crypto_price_in_usd('DOT')
+    dot_price = Price(asset_id=Asset.query.filter_by(name='DOT').first().id, value=dot.value, date=dot.date_)
+    if dot_price:
+        try:
+            db.session.add(dot_price)
+            db.session.commit()
+            print(f"DOT price added: {dot_price.value} for {dot_price.date}")
+        except IntegrityError as e:
+            db.session.rollback()
+            print(str(e))
+    else:
+        print("DOT price not saved!")
+
+    vuaa = PriceService.fetch_vuaa_price_in_usd()
+    vuaa_price = Price(asset_id=Asset.query.filter_by(name='VUAA.UK').first().id, value=vuaa.value, date=vuaa.date_)
+    if vuaa_price:
+        try:
+            db.session.add(vuaa_price)
+            db.session.commit()
+            print(f"VUAA price added: {vuaa_price.value} for {vuaa_price.date}")
+        except IntegrityError as e:
+            db.session.rollback()
+            print(str(e))
+    else:
+        print("VUAA price not saved!")
+
+    gold = PriceService.fetch_gold_one_oz_coin_price_in_pln()
+    gold_price = Price(asset_id=Asset.query.filter_by(name='GOLD').first().id, value=gold.value, date=gold.date_)
+    if gold_price:
+        try:
+            db.session.add(gold_price)
+            db.session.commit()
+            print(f"Gold price added: {gold_price.value} for {gold_price.date}")
+        except IntegrityError as e:
+            db.session.rollback()
+            print(str(e))
+    else:
+        print("Gold price not saved!")
+
+    # FileService.save_json(json_usd, 'json/usd.json')
+    # FileService.save_json(json_btc, 'json/btc.json')
+    # FileService.save_json(json_eth, 'json/eth.json')
+    # FileService.save_json(json_dot, 'json/dot.json')
+    # FileService.save_json(json_vuaa, 'json/vuaa.json')
+    # FileService.save_json(json_gold, 'json/gold.json')
 
     print("Jsons saved")
-    return json_usd
+    return {}
 
 
 @app.route('/assets')
