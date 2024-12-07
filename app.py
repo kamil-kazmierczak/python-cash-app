@@ -7,6 +7,7 @@ from forms.register_form import RegisterForm
 from models.entities import init_entities, User, Asset, Price, db
 from services.price_service import PriceService
 from services.file_service import FileService
+from models.entities import find_last_price, find_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'kamil'
@@ -159,6 +160,7 @@ def download_data():
     # FileService.save_json(json_vuaa, 'json/vuaa.json')
     # FileService.save_json(json_gold, 'json/gold.json')
 
+    flash('Download data successful.', 'success')
     print("Jsons saved")
     return {}
 
@@ -168,46 +170,24 @@ def download_data():
 def assets():
     assets_per_name = FileService.read_assets()
 
-    prices = {
-        'BTC': round(float(FileService.read_current_crypto_price('json/btc.json')), 2),
-        'ETH': round(float(FileService.read_current_crypto_price('json/eth.json')), 2),
-        'DOT': round(float(FileService.read_current_crypto_price('json/dot.json')), 2),
-        'VUAA.UK': round(float(FileService.read_current_etf_price('json/vuaa.json')), 2),
-        'NBP': 100,
-        'USD': round(float(FileService.read_usd_price_in_pln()), 2),
-        'GOLD': float(FileService.read_gold_price_in_pln())
-    }
+    prices = [
+        find_last_price('BTC'),
+        find_last_price('ETH'),
+        find_last_price('DOT'),
+        find_last_price('VUAA.UK'),
+        find_last_price('NBP'),
+        find_last_price('USD'),
+        find_last_price('GOLD')
+    ]
 
-    values = {
-        'BTC': round(float(assets_per_name['BTC']) * prices['BTC'] * prices['USD'], 2),
-        'ETH': round(float(assets_per_name['ETH']) * prices['ETH'] * prices['USD'], 2),
-        'DOT': round(float(assets_per_name['DOT']) * prices['DOT'] * prices['USD'], 2),
-        'VUAA.UK': round(float(assets_per_name['VUAA.UK']) * prices['VUAA.UK'] * prices['USD'], 2),
-        'NBP': assets_per_name['NBP'] * prices['NBP'],
-        'USD': round(assets_per_name['USD'] * prices['USD'], 2),
-        'GOLD': round(assets_per_name['GOLD'] * prices['GOLD'], 2)
-    }
-
-    _sum = round(values['BTC'] + values['ETH'] + values['DOT'] + values['VUAA.UK'] + values['NBP'] + values['USD'] + values['GOLD'], 2)
-
-    overall = {
-        'BTC': f"{values['BTC'] / _sum * 100:.2f}",
-        'ETH': f"{values['ETH'] / _sum * 100:.2f}",
-        'DOT': f"{values['DOT'] / _sum * 100:.2f}",
-        'VUAA.UK': f"{values['VUAA.UK'] / _sum * 100:.2f}",
-        'NBP': f"{values['NBP'] / _sum * 100:.2f}",
-        'USD': f"{values['USD'] / _sum * 100:.2f}",
-        'GOLD': f"{values['GOLD'] / _sum * 100:.2f}"
-    }
+    user_portfolio = find_user('kamilp').portfolios
 
     return render_template('assets.html',
                            title='Money Portfolio',
                            username='Kamil',
                            prices=prices,
-                           values=values,
-                           assets_per_name=assets_per_name,
-                           overall=overall,
-                           _sum=_sum
+                           user_portfolio=user_portfolio,
+                           assets_per_name=assets_per_name
                            )
 
 

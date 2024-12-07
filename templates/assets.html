@@ -100,135 +100,50 @@
                 <th></th>
                 <th>Name</th>
                 <th>Price</th>
+                <th>Date</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <th>1</th>
-                <td>USD</td>
-                <td>{{ prices.USD }} PLN</td>
-            </tr>
-
-            <tr>
-                <th>2</th>
-                <td>BTC</td>
-                <td>${{ prices.BTC }}</td>
-            </tr>
-
-            <tr>
-                <th>3</th>
-                <td>ETH</td>
-                <td>${{ prices.ETH }}</td>
-            </tr>
-
-            <tr>
-                <th>4</th>
-                <td>DOT</td>
-                <td>${{ prices.DOT }}</td>
-            </tr>
-
-            <tr>
-                <th>5</th>
-                <td>VUAA.UK</td>
-                <td>${{ prices['VUAA.UK'] }}</td>
-            </tr>
-
-
-            <tr>
-                <th>6</th>
-                <td>NBP</td>
-                <td>{{ prices.NBP }} PLN</td>
-            </tr>
-
-
-            <tr>
-                <th>7</th>
-                <td>GOLD</td>
-                <td>{{ prices.GOLD }} PLN</td>
-            </tr>
+                {% if prices %}
+                    {% for price in prices %}
+                    <tr>
+                        <th>{{ loop.index }}</th>
+                        <td>{{ price.asset.name }}</td>
+                        <td class="has-text-right">{{ price.value }} {{ price.asset.unit }}</td>
+                        <td>{{ price.date }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
             </tbody>
-
         </table>
     </div>
-    <div class="column">
 
+    <div class="column">
         <table class="table">
             <thead>
             <tr>
                 <th></th>
                 <th>Name</th>
-                <th>Amount</th>
+                <th>Quantity</th>
                 <th>Value</th>
-                <th>Overall</th>
             </tr>
             </thead>
             <tbody>
+            {% if user_portfolio %}
+            {% for user_portfolio_unit in user_portfolio %}
             <tr>
-                <th>1</th>
-                <td>BTC</td>
-                <td>{{ assets_per_name.BTC }}</td>
-                <td>{{ values.BTC }} PLN</td>
-                <td>{{ overall.BTC }} %</td>
+                <th>{{ loop.index }}</th>
+                <td>{{ user_portfolio_unit.asset.name }}</td>
+                <td class="has-text-right">{{ user_portfolio_unit.quantity }}</td>
+                <td class="has-text-right">{{ user_portfolio_unit.current_value }} {{ user_portfolio_unit.asset.unit }}</td>
             </tr>
-
-            <tr>
-                <th>2</th>
-                <td>ETH</td>
-                <td>{{ assets_per_name.ETH }}</td>
-                <td>{{ values.ETH }} PLN</td>
-                <td>{{ overall.ETH }} %</td>
-            </tr>
-
-            <tr>
-                <th>3</th>
-                <td>DOT</td>
-                <td>{{ assets_per_name.DOT }}</td>
-                <td>{{ values.DOT }} PLN</td>
-                <td>{{ overall.DOT }} %</td>
-            </tr>
-
-            <tr>
-                <th>4</th>
-                <td>VUAA.UK</td>
-                <td>{{ assets_per_name['VUAA.UK'] }}</td>
-                <td>{{ values['VUAA.UK'] }} PLN</td>
-                <td>{{ overall['VUAA.UK'] }} %</td>
-            </tr>
-
-            <tr>
-                <th>5</th>
-                <td>Obligacje NBP</td>
-                <td>{{ assets_per_name.NBP }}</td>
-                <td>{{ values.NBP }} PLN</td>
-                <td>{{ overall.NBP }} %</td>
-            </tr>
-
-            <tr>
-                <th>6</th>
-                <td>USD</td>
-                <td>{{ assets_per_name.USD }}</td>
-                <td>{{ values.USD }} PLN</td>
-                <td>{{ overall.USD }} %</td>
-            </tr>
-
-            <tr>
-                <th>7</th>
-                <td>GOLD</td>
-                <td>{{ assets_per_name.GOLD }}</td>
-                <td>{{ values.GOLD }} PLN</td>
-                <td>{{ overall.GOLD }} %</td>
-            </tr>
-
-            <tr>
-                <th>Sum</th>
-                <td></td>
-                <td></td>
-                <td>{{ _sum }} PLN</td>
-            </tr>
+            {% endfor %}
+            {% endif %}
             </tbody>
-
         </table>
     </div>
+
+
 </div>
 
 

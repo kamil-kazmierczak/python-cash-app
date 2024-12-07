@@ -13,7 +13,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128))
 
-    portfolios = db.relationship('UserPortfolio', backref='user', lazy=True)
+    portfolios = db.relationship('UserPortfolio', back_populates='user')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -24,6 +24,10 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
+def find_user(username: str) -> User:
+    return User.query.filter_by(username=username).first()
+
+
 class Price(db.Model):
     __tablename__ = 'prices'
 
@@ -32,9 +36,16 @@ class Price(db.Model):
     value = db.Column(db.Float, nullable=False)
     date = db.Column(db.Date, nullable=False)
 
+    asset = db.relationship('Asset')
+
     __table_args__ = (
         db.UniqueConstraint('asset_id', 'date', name='asset_price_constraint'),
     )
+
+
+def find_last_price(asset_name: str) -> Price:
+    asset = Asset.query.filter_by(name=asset_name).first()
+    return Price.query.filter_by(asset_id=asset.id).order_by(Price.date.desc()).first()
 
 
 class Asset(db.Model):
@@ -43,8 +54,6 @@ class Asset(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
     unit = db.Column(db.String(80), nullable=False)
-
-    prices = db.relationship('Price', backref='assets', lazy=True)
 
     __table_args__ = (
         db.UniqueConstraint('name',  name='asset_name_constraint'),
@@ -61,6 +70,13 @@ class UserPortfolio(db.Model):
     quantity = db.Column(db.Float, nullable=False)
     purchase_price = db.Column(db.Float, nullable=False)
     purchase_date = db.Column(db.Date, nullable=False)
+
+    user = db.relationship('User', back_populates='portfolios')
+    asset = db.relationship('Asset')
+
+    @property
+    def current_value(self):
+        return find_last_price(self.asset.name).value * self.quantity
 
 
 def init_entities(app):
