@@ -99,8 +99,8 @@
             <tr>
                 <th></th>
                 <th>Name</th>
-                <th>Price</th>
                 <th>Date</th>
+                <th>Price</th>
             </tr>
             </thead>
             <tbody>
@@ -109,8 +109,8 @@
                     <tr>
                         <th>{{ loop.index }}</th>
                         <td>{{ price.asset.name }}</td>
-                        <td class="has-text-right">{{ price.value }} {{ price.asset.unit }}</td>
                         <td>{{ price.date }}</td>
+                        <td class="has-text-right">{{ "%.2f" | format(price.value) }} {{ price.asset.unit }}</td>
                     </tr>
                     {% endfor %}
                 {% endif %}
@@ -135,7 +135,7 @@
                 <th>{{ loop.index }}</th>
                 <td>{{ user_portfolio_unit.asset.name }}</td>
                 <td class="has-text-right">{{ user_portfolio_unit.quantity }}</td>
-                <td class="has-text-right">{{ user_portfolio_unit.current_value }} {{ user_portfolio_unit.asset.unit }}</td>
+                <td class="has-text-right">{{ "%.2f" | format(user_portfolio_unit.current_value) }} {{ user_portfolio_unit.asset.unit }}</td>
             </tr>
             {% endfor %}
             {% endif %}
