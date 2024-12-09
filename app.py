@@ -8,6 +8,7 @@ from models.entities import init_entities, User, Asset, Price, db
 from services.price_service import PriceService
 from services.file_service import FileService
 from models.entities import find_last_price, find_user
+from services.currency_service import CurrencyService, Currency
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'kamil'
@@ -74,8 +75,13 @@ def register():
 
 @app.route('/download_data')
 def download_data():
+    try:
+        CurrencyService.save_currency_rate(Currency.USD, Currency.PLN)
+    except IntegrityError as e:
+        db.session.rollback()
+        print(str(e))
+
     usd = PriceService.fetch_usd_price_in_pln()
-    print(usd)
     usd_price = Price(asset_id=Asset.query.filter_by(name='USD').first().id, value=usd.value, date=usd.date_)
     if usd_price:
         try:

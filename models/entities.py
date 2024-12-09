@@ -43,6 +43,20 @@ class Price(db.Model):
     )
 
 
+class CurrencyRate(db.Model):
+    __tablename__ = 'currency_rates'
+
+    id = db.Column(db.Integer, primary_key=True)
+    base_currency = db.Column(db.String(3), nullable=False)
+    target_currency = db.Column(db.String(3), nullable=False)
+    value = db.Column(db.Float, nullable=False)
+    date = db.Column(db.Date, nullable=False)
+
+    __table_args__ = (
+        db.UniqueConstraint('base_currency', 'target_currency', 'date', name='currency_rate_constraint'),
+    )
+
+
 def find_last_price(asset_name: str) -> Price:
     asset = Asset.query.filter_by(name=asset_name).first()
     return Price.query.filter_by(asset_id=asset.id).order_by(Price.date.desc()).first()
