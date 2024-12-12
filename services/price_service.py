@@ -47,14 +47,14 @@ class PriceService:
     @staticmethod
     def fetch_gold_one_oz_coin_price_in_pln() -> PriceDto:
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=False)
+            browser = p.chromium.launch(headless=True)
             page = browser.new_page()
 
             page.goto('https://mennicakapitalowa.pl/Skup-zlotych-monet-cennik-i-zasady-ccms-pol-65.html')
 
             try:
-                page.locator('a[data-cookie-view="basic minimal consents privacy"]').wait_for()
-                page.locator('a[data-cookie-view="basic minimal consents privacy"]').click()
+                page.wait_for_selector('a[href="#acceptAll"]', timeout=5000)
+                page.locator('a[href="#acceptAll"]').click()
             except:
                 print('Nie znaleziono przycisku do zatwierdzenie plikow cookie')
 

@@ -1,6 +1,7 @@
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
+from datetime import date
 
 db = SQLAlchemy()
 
@@ -42,6 +43,9 @@ class Price(db.Model):
         db.UniqueConstraint('asset_id', 'date', name='asset_price_constraint'),
     )
 
+    def __repr__(self):
+        return f'<Price {self.id, self.asset_id, self.value, self.date}>'
+
 
 class CurrencyRate(db.Model):
     __tablename__ = 'currency_rates'
@@ -60,6 +64,13 @@ class CurrencyRate(db.Model):
 def find_last_price(asset_name: str) -> Price:
     asset = Asset.query.filter_by(name=asset_name).first()
     return Price.query.filter_by(asset_id=asset.id).order_by(Price.date.desc()).first()
+
+
+def should_fetch_price(asset_name: str) -> bool:
+    asset = Asset.query.filter_by(name=asset_name).first()
+    price = Price.query.filter_by(asset_id=asset.id, date=date.today()).first()
+    print(price)
+    return price is None
 
 
 class Asset(db.Model):
