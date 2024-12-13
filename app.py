@@ -142,19 +142,19 @@ def download_data_internal():
     else:
         print("DOT price was saved already!")
 
-    # if should_fetch_price('VUAA.UK'):
-    #     vuaa = PriceService.fetch_vuaa_price_in_usd()
-    #     vuaa_price = Price(asset_id=Asset.query.filter_by(name='VUAA.UK').first().id, value=vuaa.value, date=vuaa.date_)
-    #     if vuaa_price:
-    #         try:
-    #             db.session.add(vuaa_price)
-    #             db.session.commit()
-    #             print(f"VUAA price added: {vuaa_price.value} for {vuaa_price.date}")
-    #         except IntegrityError as e:
-    #             db.session.rollback()
-    #             print(str(e))
-    # else:
-    #     print("VUAA price was saved already!")
+    if should_fetch_price('VUAA.UK'):
+        vuaa = PriceService.fetch_vuaa_price_in_usd()
+        vuaa_price = Price(asset_id=Asset.query.filter_by(name='VUAA.UK').first().id, value=vuaa.value, date=vuaa.date_)
+        if vuaa_price:
+            try:
+                db.session.add(vuaa_price)
+                db.session.commit()
+                print(f"VUAA price added: {vuaa_price.value} for {vuaa_price.date}")
+            except IntegrityError as e:
+                db.session.rollback()
+                print(str(e))
+    else:
+        print("VUAA price was saved already!")
 
     if should_fetch_price('GOLD'):
         gold = PriceService.fetch_gold_one_oz_coin_price_in_pln()
@@ -197,11 +197,11 @@ def assets():
         find_last_price('GOLD')
     ]
 
-    user_portfolio = find_user('kamilp').portfolios
+    user_portfolio = find_user(current_user.username).portfolios
 
     return render_template('assets.html',
                            title='Money Portfolio',
-                           username='Kamil',
+                           username=current_user.username,
                            prices=prices,
                            user_portfolio=user_portfolio,
                            assets_per_name=assets_per_name
@@ -214,7 +214,7 @@ def download_data_with_context():
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=download_data_with_context, trigger="interval", seconds=60)
+scheduler.add_job(func=download_data_with_context, trigger="interval", seconds=6000)
 scheduler.start()
 
 if __name__ == '__main__':
