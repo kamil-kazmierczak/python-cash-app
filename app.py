@@ -14,8 +14,11 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'kamil'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-print(os.getenv('DATABASE_URL'))
+
+DATABASE_URL = os.getenv('DATABASE_URL', '').replace('postgres://', 'postgresql://')
+print(DATABASE_URL)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 db.init_app(app)
 
 login_manager = LoginManager(app)
