@@ -218,7 +218,7 @@ def download_data_with_context():
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=download_data_with_context, trigger="interval", seconds=6000)
+scheduler.add_job(func=download_data_with_context, trigger="interval", seconds=60)
 scheduler.start()
 
 if __name__ == '__main__':
